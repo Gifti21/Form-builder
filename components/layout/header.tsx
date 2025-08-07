@@ -27,7 +27,7 @@ export default function Header() {
             </Link>
           </nav>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 text-bold">
           <Button asChild variant="outline" size="sm">
             <Link href="/dashboard/forms/create">Create Form</Link>
           </Button>
