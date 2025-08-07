@@ -1,39 +1,43 @@
 "use client";
 import React from "react";
-
+import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { FormEvent, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/navigation";
 
 export default function FormBuilder() {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     title: "",
     description: "",
     questions: [
-      {
-        id: "1",
-        text: "",
-      },
-      {
-        id: "2",
-        text: "",
-      },
+      { id: uuidv4(), text: "" },
+      { id: uuidv4(), text: "" },
     ],
   });
 
   const addQuestion = () => {
     setForm((prev) => ({
       ...prev,
-      questions: [...prev.questions, { id: Date.now().toString(), text: "" }],
+      questions: [...prev.questions, { id: uuidv4(), text: "" }],
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    // Handle form submission logic here
-    console.log(form);
+  const removeQuestion = (id: string) => {
+    if (form.questions.length <= 1) {
+      toast.error("You must keep at least one question");
+      return;
+    }
+
+    setForm((prev) => ({
+      ...prev,
+      questions: prev.questions.filter((question) => question.id !== id),
+    }));
   };
 
   const handleQuestionChange = (id: string, value: string) => {
@@ -43,6 +47,34 @@ export default function FormBuilder() {
         question.id === id ? { ...question, text: value } : question
       ),
     }));
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    //validate forms
+    if (!form.title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    const emptyQuestions = form.questions.some((q) => !q.text.trim());
+    if (emptyQuestions) {
+      toast.error("All questions must have text");
+      return;
+    }
+    try {
+      setIsSubmitting(true);
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      toast.success("Form saved successfully!");
+    } catch {
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCancel = () => {
+    router.back();
   };
 
   return (
@@ -93,6 +125,7 @@ export default function FormBuilder() {
                 type="button"
                 size="sm"
                 className="text-black-500 hover:text-gray-500"
+                onClick={() => removeQuestion(question.id)}
               >
                 Remove
               </Button>
@@ -114,7 +147,7 @@ export default function FormBuilder() {
           className="hover:text-red-500"
           type="button"
           variant="outline"
-          onClick={() => {}}
+          onClick={handleCancel}
         >
           Cancel
         </Button>
@@ -122,8 +155,9 @@ export default function FormBuilder() {
           type="submit"
           className="hover:text-blue-500 bg-blue-400 text-white-500"
           variant="outline"
+          disabled={isSubmitting}
         >
-          Save
+          {isSubmitting ? "saving..." : "Create Forms"}
         </Button>
       </div>
     </form>
