@@ -64,7 +64,7 @@ export default function FormBuilder() {
     }
     try {
       setIsSubmitting(true);
-      // Simulate API call delay
+      // Simulate call delay
       await new Promise((resolve) => setTimeout(resolve, 2000));
       toast.success("Form saved successfully!");
     } catch {

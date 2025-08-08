@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/button";
-import Link from "next/dist/client/link";
-import React from "react";
+import Link from "next/link";
+import { syncUserWithDatabase } from "@/lib/clerk-sync";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  await syncUserWithDatabase();
+
   return (
-    <div className="space-y-6 ">
+    <div className="space-y-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Welcome...</h1>
-        <p className="text-gray-500 mt-1 ">Manage your forms and responses.</p>
+        <p className="text-gray-500 mt-1">Manage your forms and responses.</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-pink-200 rounded-lg shadow p-6 border">
@@ -25,15 +27,15 @@ export default function Dashboard() {
         </div>
         <div className="bg-pink-200 rounded-lg shadow p-6 border">
           <h2 className="text-xl font-medium">Create New</h2>
-          <p className="text-gray-500  mt-2">Start building a new form</p>
+          <p className="text-gray-500 mt-2">Start building a new form</p>
           <Button className="mt-4" asChild>
-            <Link href="/dashboard/forms">Create Form</Link>
+            <Link href="/dashboard/forms/new">Create Form</Link>
           </Button>
         </div>
       </div>
       <div className="bg-purple-300 rounded-lg shadow p-6 border mt-8">
         <h2 className="text-xl font-medium">Recent Forms</h2>
-        <div className="flex items-center justify-between pb-4"> </div>
+        <div className="flex items-center justify-between pb-4"></div>
         <div>
           <h3>
             <b>This is the title</b>
@@ -43,11 +45,11 @@ export default function Dashboard() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button>
-            <Link href={"/dashboard/forms/123"}>View Details</Link>
+          <Button asChild>
+            <Link href="/dashboard/forms/123">View Details</Link>
           </Button>
-          <Button>
-            <Link href={"/dashboard/forms/123/responses"}>Responses</Link>
+          <Button asChild>
+            <Link href="/dashboard/forms/123/responses">Responses</Link>
           </Button>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 //import Link from "next/link";
-export default function Home() {
+export default async function Home() {
   return (
     <div className=" flex-col min-h-screen">
       <header className="bg-white border-b border-gray-500 py-4">
@@ -31,12 +31,12 @@ export default function Home() {
             Build forms, collect responses, and analyze data - all with this
             platform.
           </p>
-            <SignedOut>
-              <SignInButton>
-                <Button variant="outline">Get Started</Button>
-              </SignInButton>
-            </SignedOut>
-            <SignedIn></SignedIn>
+          <SignedOut>
+            <SignInButton>
+              <Button variant="outline">Get Started</Button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn></SignedIn>
         </div>
       </div>
     </div>

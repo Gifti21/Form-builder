@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// schema.prisma
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL") // mysql://root:@localhost:3306/your_db
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String   @id @default(uuid())
+  clerkId       String   @unique
+  username      String?
+  email         String   @unique
+  emailVerified DateTime?
+  password      String?
+  firstName     String?
+  lastName      String?
+  profileImageUrl String?
+  forms         Form[]
+  formResponses FormResponse[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+
+model Form {
+  id           String         @id @default(uuid())
+  title        String
+  description  String?
+  questions    Question[]
+  user         User           @relation(fields: [userId], references: [id])
+  userId       String
+  responses    FormResponse[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Question {
+  id        String   @id @default(uuid())
+  text      String
+  order     Int
+  form      Form     @relation(fields: [formId], references: [id])
+  formId    String
+  answers   Answer[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FormResponse {
+  id               String   @id @default(uuid())
+  form             Form     @relation(fields: [formId], references: [id])
+  formId           String
+  answers          Answer[]
+  user             User?    @relation(fields: [userId], references: [id])
+  userId           String?
+  respondentEmail  String?
+  respondentName   String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt  
+}
+
+model Answer {
+  id           String       @id @default(uuid())
+  text         String
+  question     Question     @relation(fields: [questionId], references: [id])
+  questionId   String
+  response     FormResponse @relation(fields: [responseId], references: [id])
+  responseId   String
+  formId       String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt  
+}
